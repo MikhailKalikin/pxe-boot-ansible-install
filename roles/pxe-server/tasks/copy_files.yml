@@ -1,0 +1,27 @@
+---
+# Copy necessary files from Ubuntu ISO
+
+- name: Download Ubuntu ISO
+  get_url:
+    url: "{{ ubuntu_iso_url }}"
+    dest: /tmp/ubuntu.iso
+
+- name: Mount Ubuntu ISO
+  command: mount -o loop /tmp/ubuntu.iso /mnt
+  args:
+    creates: /mnt/casper
+
+- name: Copy files from Ubuntu ISO
+  copy:
+    src: "/mnt/"
+    dest: "/var/www/html/server/ubuntu-22.04/"
+    remote_src: yes
+
+- name: Copy hidden files from Ubuntu ISO
+  copy:
+    src: "/mnt/.disk"
+    dest: "/var/www/html/server/ubuntu-22.04/"
+    remote_src: yes
+
+- name: Unmount Ubuntu ISO
+  command: umount /mnt

@@ -1,0 +1,30 @@
+---
+# Install required packages
+
+- name: Install Apache, NFS, and dnsmasq
+  apt:
+    name:
+      - apache2
+      - nfs-kernel-server
+      - dnsmasq
+    state: present
+    update_cache: yes
+
+- name: Download PXELinux package
+  shell: |
+    mkdir -p ~/Downloads/syslinux
+    cd ~/Downloads/syslinux
+    wget https://mirrors.edge.kernel.org/pub/linux/utils/boot/syslinux/syslinux-6.03.zip
+    unzip syslinux-6.03.zip
+  args:
+    creates: ~/Downloads/syslinux/syslinux-6.03.zip
+
+- name: Download UEFI packages
+  shell: |
+    apt-get download shim.signed
+    dpkg -x shim.signed* shim
+
+    apt-get download grub-efi-amd64-signed
+    dpkg -x grub-efi-amd64-signed* grub
+  args:
+    creates: ~/shim

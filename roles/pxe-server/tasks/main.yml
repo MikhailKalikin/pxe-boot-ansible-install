@@ -1,0 +1,11 @@
+---
+# Main task file for the PXE server role
+
+- name: Install required packages
+  include_tasks: install.yml
+
+- name: Configure PXE server
+  include_tasks: configure.yml
+
+- name: Copy installation files
+  include_tasks: copy_files.yml

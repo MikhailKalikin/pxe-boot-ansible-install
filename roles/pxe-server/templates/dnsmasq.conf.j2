@@ -1,0 +1,14 @@
+interface=eth0,lo
+bind-interfaces
+domain=c-nergy.local
+
+dhcp-range=192.168.1.160,192.168.1.200,255.255.255.0,2h
+dhcp-option=3,192.168.1.1
+dhcp-option=6,192.168.1.1
+server=8.8.8.8
+
+dhcp-boot=/bios/pxelinux.0,pxeserver,192.168.1.150
+enable-tftp
+tftp-root=/tftp
+dhcp-match=set:efi-x86_64,option:client-arch,7
+dhcp-boot=tag:efi-x86_64,grub/bootx64.efi

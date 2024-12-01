@@ -1,0 +1,48 @@
+---
+# Configure PXE server
+
+- name: Set up static IP
+  lineinfile:
+    path: /etc/netplan/01-netcfg.yaml
+    line: |
+      network:
+        version: 2
+        renderer: networkd
+        ethernets:
+          eth0:
+            dhcp4: false
+            addresses: [192.168.1.150/24]
+            gateway4: 192.168.1.1
+            nameservers:
+              addresses: [8.8.8.8, 8.8.4.4]
+  notify: Apply Netplan
+
+- name: Create TFTP folder structure
+  file:
+    path: "/tftp/{{ item }}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - bios
+    - boot
+    - grub
+
+- name: Create Apache web folder structure
+  file:
+    path: "/var/www/html/{{ item }}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - server/ubuntu-22.04
+
+- name: Configure NFS exports
+  template:
+    src: exports.j2
+    dest: /etc/exports
+  notify: Restart NFS
+
+- name: Configure dnsmasq
+  template:
+    src: dnsmasq.conf.j2
+    dest: /etc/dnsmasq.conf
+  notify: Restart dnsmasq

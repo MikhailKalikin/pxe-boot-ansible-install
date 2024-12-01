@@ -1,0 +1,12 @@
+- name: Apply Netplan
+  command: netplan apply
+
+- name: Restart NFS
+  service:
+    name: nfs-kernel-server
+    state: restarted
+
+- name: Restart dnsmasq
+  service:
+    name: dnsmasq
+    state: restarted
